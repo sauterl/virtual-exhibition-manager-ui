@@ -38,7 +38,7 @@ export class Exhibition implements IExhibition {
      * Returns a short ID for this @type {Exhibition}
      */
     get shortId(): string {
-        return this.id.substr(0,5);
+        return this.id.toString().substr(0,5 );
     }
 
     /**
