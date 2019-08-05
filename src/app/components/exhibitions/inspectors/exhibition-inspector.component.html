@@ -2,7 +2,11 @@
 
 
 <mat-form-field class="full-width">
-    <input disabled matInput placeholder="ID" [value]="exhibition.id">
+    <input disabled matInput placeholder="ID" [value]="exhibition.id.id">
+</mat-form-field>
+
+<mat-form-field class="full-width">
+  <input matInput placeholder="Key" matTooltip="Human readable, unique name of the exhibition" [(ngModel)]="exhibition.key">
 </mat-form-field>
 
 <mat-form-field class="full-width">
