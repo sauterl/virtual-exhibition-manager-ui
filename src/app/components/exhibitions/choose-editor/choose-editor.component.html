@@ -1,0 +1,15 @@
+<nav mat-tab-nav-bar>
+  <a mat-tab-link
+     [routerLink]="['visual']"
+     routerLinkActive #rla="routerLinkActive"
+     [active]="rla.isActive">
+    Visual Editor
+  </a>
+  <a mat-tab-link
+     [routerLink]="['legacy']"
+     routerLinkActive #rlb="routerLinkActive"
+     [active]="rlb.isActive">
+    Legacy Editor
+  </a>
+</nav>
+<router-outlet></router-outlet>

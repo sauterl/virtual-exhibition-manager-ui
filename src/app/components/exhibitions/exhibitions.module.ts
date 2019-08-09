@@ -4,10 +4,13 @@ import {MaterialModule} from '../../material.module';
 import {EditExhibitionComponent} from './edit-exhibition.component';
 import {ListExhibitionComponent} from './list-exhibition.component';
 import {InspectorModule} from './inspectors/inspector.module';
+import { EditExhibitionVisualComponent } from './edit-exhibition-visual/edit-exhibition-visual.component';
+import { ChooseEditorComponent } from './choose-editor/choose-editor.component';
+import {RouterModule} from '@angular/router';
 
 @NgModule({
-    declarations: [ EditExhibitionComponent, ListExhibitionComponent ],
-    imports: [ BrowserModule, MaterialModule, InspectorModule ],
+    declarations: [ EditExhibitionComponent, ListExhibitionComponent, EditExhibitionVisualComponent, ChooseEditorComponent ],
+  imports: [BrowserModule, MaterialModule, InspectorModule, RouterModule],
     exports: [ EditExhibitionComponent, ListExhibitionComponent ]
 })
 export class ExhibitionsModule {}

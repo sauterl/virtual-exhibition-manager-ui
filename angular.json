@@ -29,7 +29,7 @@
             "styles": [
               "src/scss/styles.scss"
             ],
-            "scripts": []
+            "scripts": ["node_modules/two.js/build/two.js", "node_modules/jquery/dist/jquery.js"]
           },
           "configurations": {
             "production": {
@@ -85,7 +85,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
+            "scripts": ["node_modules/two.js/build/two.js", "node_modules/jquery/dist/jquery.js"],
             "assets": [
               "src/favicon.ico",
               "src/assets"
