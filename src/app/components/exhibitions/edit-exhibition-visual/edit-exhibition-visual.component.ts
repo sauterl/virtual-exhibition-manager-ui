@@ -8,6 +8,7 @@ import {NestedTreeControl} from '@angular/cdk/tree';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Vector3f} from '../../../model/interfaces/general/vector-3f.model';
+import {VremApiService} from '../../../services/http/vrem-api.service';
 // import * as Two from 'two.js';
 
 declare var Two: any;
@@ -31,7 +32,8 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
 
     // Make an instance of two and place it on the page.
     let elem = this.vis_elem.nativeElement;
-    let params = {width: this.container_width, height: this.container_height};
+
+    let params = {width: elem.width, height: elem.height};
     this.two_global = new Two(params).appendTo(elem);
 
     let size_room: Vector3f;
@@ -80,7 +82,7 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
    *
    * @param _editor Reference to the {EditorService}
    */
-  constructor(private _editor: EditorService) {
+  constructor(private _editor: EditorService, private _vrem_service: VremApiService) {
     this._roomDataSources = this._editor.currentObservable.pipe(map( e => e.rooms));
   }
 
@@ -240,7 +242,10 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
       console.log(e.size.y);
 
       let art = two.makeRectangle(e.position.x * this.pix_per_m, e.position.y * this.pix_per_m, e.size.x * this.pix_per_m, e.size.y * this.pix_per_m);
-      art.fill = 'black';
+      let p = this._vrem_service.urlForContent(e.path);
+      console.log(p);
+      let image = two.makeTexture(this._vrem_service.urlForContent(e.path));
+      art.fill = image;
       art.stroke = 'red';
       this.art_global.add(art);
       two.update();
