@@ -24,27 +24,43 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
   @ViewChild('vis', {read: ElementRef}) vis_elem: ElementRef;
   private two_global: any;
   private art_global: any;
-  private container_width = 900;
-  private container_height = 600;
+  private two_width: number;
+  private two_height: number;
   private pix_per_m: number;
 
   ngAfterViewInit(): void {
-
-    // Make an instance of two and place it on the page.
-    let elem = this.vis_elem.nativeElement;
-
-    let params = {width: elem.width, height: elem.height};
-    this.two_global = new Two(params).appendTo(elem);
-
+    // Get room size and calculate width to height ratio.
     let size_room: Vector3f;
     this._roomDataSources.subscribe(x => size_room = x[0].size);
-    const ratio = size_room.x / size_room.y;
-    this.pix_per_m = this.container_width / size_room.x;
+    const ratio_wall = size_room.x / size_room.y;
 
-    let wall = this.two_global.makeRectangle(0, 0, this.container_width, this.container_width / ratio);
+    const elem = this.vis_elem.nativeElement;
+    const ratio_elem = elem.clientWidth / elem.clientHeight;
+
+    if (ratio_wall > ratio_elem) {
+      this.two_width = elem.clientWidth;
+      this.two_height = this.two_width / ratio_wall;
+      this.pix_per_m = this.two_width / size_room.x;
+      //elem.style.height = this.two_height;
+    } else {
+      this.two_height = elem.clientHeight;
+      this.two_width = this.two_height * ratio_wall;
+      this.pix_per_m = elem.clientHeight / size_room.y;
+      elem.style.width = this.two_width;
+    }
+
+    console.log(this.two_width);
+    console.log(this.two_height);
+
+    let params = {width: this.two_width, height: this.two_height};
+    this.two_global = new Two(params).appendTo(elem);
+
+
+
+    let wall = this.two_global.makeRectangle(0, 0, this.two_width, this.two_height);
     wall.center();
 
-    wall.translation.set(this.two_global.width/2, this.two_global.height/2);
+    wall.translation.set(this.two_global.width / 2, this.two_global.height / 2);
     wall.scale = 1;
     wall.fill = '#EEEEEE';
     wall.noStroke();
@@ -239,22 +255,17 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
 
       let e = wall.exhibits[exhibit];
 
-      console.log(e.size.y);
-
       let art = two.makeRectangle(e.position.x * this.pix_per_m, e.position.y * this.pix_per_m, e.size.x * this.pix_per_m, e.size.y * this.pix_per_m);
       let p = this._vrem_service.urlForContent(e.path);
       console.log(p);
       let image = two.makeTexture(this._vrem_service.urlForContent(e.path));
       art.fill = image;
       art.stroke = 'red';
+      art.center();
       this.art_global.add(art);
       two.update();
       addInteractivity(art);
     }
-
-
-
-
 
     function addInteractivity(shape) {
 

@@ -7,10 +7,7 @@
     <app-exhibit-inspector *ngIf="(isSelectedExhibit|async)" [exhibit]="(inspected|async)"></app-exhibit-inspector>
   </mat-drawer>
 
-  <div class="visualizer">
-    <h2>whatever</h2>
-    <div #vis></div>
-  </div>
+  <div #vis class="visualizer"></div>
 
   <div class="content" *ngIf="!!(exhibition|async)" (click)="exhibitionClicked($event)">
     <h1 class="mat-h1">Exhibition dashboard: {{(exhibition|async).name}} (ID={{(exhibition|async).shortId}})</h1>
