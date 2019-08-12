@@ -6,7 +6,7 @@ import {Wall} from '../../../model/implementations/wall.model';
 import {Exhibit} from '../../../model/implementations/exhibit.model';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, share} from 'rxjs/operators';
 import {Vector3f} from '../../../model/interfaces/general/vector-3f.model';
 import {VremApiService} from '../../../services/http/vrem-api.service';
 // import * as Two from 'two.js';
@@ -85,6 +85,7 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
 
   /** The data source for the per-room tree list. */
   private _roomDataSources: Observable<Room[]>;
+  private _exhibits: Observable<Exhibit[]>;
 
   /** Helper functions to render the tree list. */
   public readonly isWallFiller = (_: number, node: (Room | Wall | Exhibit)) => Array.isArray(node) && _ === 0;
@@ -100,6 +101,7 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
    */
   constructor(private _editor: EditorService, private _vrem_service: VremApiService) {
     this._roomDataSources = this._editor.currentObservable.pipe(map( e => e.rooms));
+    this._exhibits = this._vrem_service.listExhibits();
   }
 
   /**
@@ -250,7 +252,7 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
     this.art_global = two.makeGroup();
 
 
-    let exhibit: number;
+    let exhibit: any;
     for (exhibit in wall.exhibits) {
 
       let e = wall.exhibits[exhibit];

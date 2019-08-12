@@ -1,13 +1,12 @@
 <mat-drawer-container class="container" autosize>
   <mat-drawer class="inspector" position="end" mode="side" opened>
     <h1 class="mat-h1">Inspector: {{(selectedType|async)}}</h1>
-    <app-exhibition-inspector *ngIf="(isSelectedExhibition|async)" [exhibition]="(inspected|async)"></app-exhibition-inspector>
-    <app-room-inspector *ngIf="(isSelectedRoom|async)" [room]="(inspected|async)"></app-room-inspector>
-    <app-wall-inspector *ngIf="(isSelectedWall|async)" [wall]="(inspected|async)"></app-wall-inspector>
-    <app-exhibit-inspector *ngIf="(isSelectedExhibit|async)" [exhibit]="(inspected|async)"></app-exhibit-inspector>
+    <div *ngFor="let exhibit of (_exhibits|async)">
+      {{exhibit.name}}
+    </div>
   </mat-drawer>
 
-  <div #vis class="visualizer"></div>
+  <div #vis class="visualizer">Test: {{(_exhibits|async).length}}</div>
 
   <div class="content" *ngIf="!!(exhibition|async)" (click)="exhibitionClicked($event)">
     <h1 class="mat-h1">Exhibition dashboard: {{(exhibition|async).name}} (ID={{(exhibition|async).shortId}})</h1>

@@ -6,6 +6,8 @@ import {RestfulService} from './restful.service';
 import {first, map} from 'rxjs/operators';
 import {ListExhibitionResponse} from '../../model/responses/list-exhibition-response.interface';
 import {IExhibition} from '../../model/interfaces/exhibition/exhibition.interface';
+import {ListExhibitsResponse} from '../../model/responses/list-exhibits-response.interface';
+import {Exhibit} from '../../model/implementations/exhibit.model';
 
 @Injectable()
 export class VremApiService extends RestfulService {
@@ -26,6 +28,11 @@ export class VremApiService extends RestfulService {
      * */
     public list(): Observable<ExhibitionSummary[]> {
         return this.get<ListExhibitionResponse>('exhibitions/list').pipe(map(r => r.exhibitions));
+    }
+
+    // Or do I have to use IExhibit?
+    public listExhibits(): Observable<Exhibit[]> {
+        return this.get<ListExhibitsResponse>('exhibits/list').pipe(map(r => r.exhibits));
     }
 
     /**
