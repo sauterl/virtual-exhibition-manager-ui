@@ -1,12 +1,14 @@
 <mat-drawer-container class="container" autosize>
   <mat-drawer class="inspector" position="end" mode="side" opened>
     <h1 class="mat-h1">Inspector: {{(selectedType|async)}}</h1>
-    <div *ngFor="let exhibit of (_exhibits|async)">
-      {{exhibit.name}}
+    <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+      <div *ngFor="let exhibit of (_exhibits|async)" cdkDrag>
+        {{exhibit.id}}
+      </div>
     </div>
   </mat-drawer>
 
-  <div #vis class="visualizer">Test: {{(_exhibits|async).length}}</div>
+  <div #vis class="visualizer"></div>
 
   <div class="content" *ngIf="!!(exhibition|async)" (click)="exhibitionClicked($event)">
     <h1 class="mat-h1">Exhibition dashboard: {{(exhibition|async).name}} (ID={{(exhibition|async).shortId}})</h1>

@@ -9,6 +9,7 @@ import {Observable} from 'rxjs';
 import {map, share} from 'rxjs/operators';
 import {Vector3f} from '../../../model/interfaces/general/vector-3f.model';
 import {VremApiService} from '../../../services/http/vrem-api.service';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 // import * as Two from 'two.js';
 
 declare var Two: any;
@@ -67,6 +68,14 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
 
     this.art_global = this.two_global.makeGroup();
     this.two_global.update();
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    const addedExhibit = this.two_global.makeRectangle(this.two_global.width / 2, this.two_global.height / 2, 100, 100);
+    addedExhibit.fill = 'beige';
+    this.two_global.update();
+    this.addInteractivity(addedExhibit);
+    // moveItemInArray(this._exhibits, event.previousIndex, event.currentIndex);
   }
 
 
@@ -266,44 +275,44 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
       art.center();
       this.art_global.add(art);
       two.update();
-      addInteractivity(art);
+      this.addInteractivity(art);
     }
 
-    function addInteractivity(shape) {
-
-      let offset_x: number;
-      let offset_y: number;
-
-      const drag = function(e) {
-        e.preventDefault();
-        let x = e.clientX - offset_x;
-        let y = e.clientY + pageYOffset - offset_y;
-        shape.translation.set(x, y);
-        two.update();
-      };
-      const dragEnd = function(e) {
-        e.preventDefault();
-        $(window)
-          .unbind('mousemove', drag)
-          .unbind('mouseup', dragEnd);
-      };
-
-      $(shape._renderer.elem)
-        .css({
-          cursor: 'pointer'
-        })
-        .bind('mousedown', function(e) {
-          e.preventDefault();
-
-          offset_x = e.clientX - shape.translation.x;
-          offset_y = e.clientY - shape.translation.y;
-          $(window)
-            .bind('mousemove', drag)
-            .bind('mouseup', dragEnd);
-        });
-    }
   }
 
+  addInteractivity(shape): void {
+    const two = this.two_global;
+    let offset_x: number;
+    let offset_y: number;
+
+    const drag = function (e) {
+      e.preventDefault();
+      let x = e.clientX - offset_x;
+      let y = e.clientY + pageYOffset - offset_y;
+      shape.translation.set(x, y);
+      two.update();
+    };
+    const dragEnd = function (e) {
+      e.preventDefault();
+      $(window)
+        .unbind('mousemove', drag)
+        .unbind('mouseup', dragEnd);
+    };
+
+    $(shape._renderer.elem)
+      .css({
+        cursor: 'pointer'
+      })
+      .bind('mousedown', function (e) {
+        e.preventDefault();
+
+        offset_x = e.clientX - shape.translation.x;
+        offset_y = e.clientY - shape.translation.y;
+        $(window)
+          .bind('mousemove', drag)
+          .bind('mouseup', dragEnd);
+      });
+  }
 }
 
 
