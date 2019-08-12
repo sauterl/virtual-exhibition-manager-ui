@@ -8,6 +8,10 @@
     </div>
   </mat-drawer>
 
+  <div>
+    <img src="{{_vrem_service.urlForContent((_exhibits|async)[0].path)}}"/>
+  </div>
+
   <div #vis class="visualizer"></div>
 
   <div class="content" *ngIf="!!(exhibition|async)" (click)="exhibitionClicked($event)">

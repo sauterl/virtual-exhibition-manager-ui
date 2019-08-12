@@ -266,9 +266,7 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
 
       let e = wall.exhibits[exhibit];
 
-      let art = two.makeRectangle(e.position.x * this.pix_per_m, e.position.y * this.pix_per_m, e.size.x * this.pix_per_m, e.size.y * this.pix_per_m);
-      let p = this._vrem_service.urlForContent(e.path);
-      console.log(p);
+      let art = two.makeRectangle(e.position.x * this.pix_per_m, this.two_height - e.position.y * this.pix_per_m, e.size.x * this.pix_per_m, e.size.y * this.pix_per_m);
       let image = two.makeTexture(this._vrem_service.urlForContent(e.path));
       art.fill = image;
       art.stroke = 'red';
