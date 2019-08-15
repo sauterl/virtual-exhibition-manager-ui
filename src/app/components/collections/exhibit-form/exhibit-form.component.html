@@ -24,10 +24,10 @@
     <input hidden (change)="onFileChange($event)" #fileInput type="file" id="file">
   <br>
   <mat-form-field>
-    <input class="size" matInput formControlName="size_width" placeholder="Width">
+    <input class="size" matInput #sizeWidth (change)="setHeight(sizeWidth.value)" formControlName="size_width" placeholder="Width"/>
   </mat-form-field>
   <mat-form-field>
-    <input class="size" matInput formControlName="size_height" placeholder="Height">
+    <input class="size" matInput #sizeHeight (change)="setWidth(sizeHeight.value)" formControlName="size_height" placeholder="Height"/>
   </mat-form-field>
   <br>
   <mat-form-field>

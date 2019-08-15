@@ -1,7 +1,8 @@
-import {Exhibit} from '../../implementations/exhibit.model';
+import {IExhibit} from '../objects/exhibit.interface';
 
 export interface IExhibitUpload {
   artCollection: string;
-  exhibits: Exhibit;
-  files: File[];
+  exhibit: IExhibit;
+  file: string;
+  fileExtension: string;
 }
