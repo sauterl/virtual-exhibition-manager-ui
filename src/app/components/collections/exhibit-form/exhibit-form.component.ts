@@ -5,6 +5,9 @@ import {CHOType} from '../../../model/interfaces/objects/cho-type.interface';
 import {VremApiService} from '../../../services/http/vrem-api.service';
 import {Vector3f} from '../../../model/interfaces/general/vector-3f.model';
 import {ExhibitUpload} from '../../../model/implementations/exhibit-upload.model';
+import {Observable, of} from 'rxjs';
+import {catchError, first, map, tap} from 'rxjs/operators';
+import {Exhibition} from '../../../model/implementations/exhibition.model';
 
 @Component({
   selector: 'app-exhibit-form',
@@ -95,9 +98,9 @@ export class ExhibitFormComponent implements OnInit {
       exhibit,
       this.exhibitForm.get('exhibitFile').value,
       this.exhibitForm.get('exhibitFileExtension').value
-    )
+    );
 
-    this._vrem_service.uploadExhibit(exhibitUpload);
+    this._vrem_service.uploadExhibit(exhibitUpload).pipe(first(), map(e => true), catchError(() => of(false))).subscribe(s => console.log(s));
   }
 
 }

@@ -259,21 +259,21 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
 
     two.remove(this.art_global);
     this.art_global = two.makeGroup();
-
+    const that = this;
 
     let exhibit: any;
     for (exhibit in wall.exhibits) {
 
-      let e = wall.exhibits[exhibit];
+      const e = wall.exhibits[exhibit];
 
-      let art = two.makeRectangle(e.position.x * this.pix_per_m, this.two_height - e.position.y * this.pix_per_m, e.size.x * this.pix_per_m, e.size.y * this.pix_per_m);
-      let image = two.makeTexture(this._vrem_service.urlForContent(e.path));
-      art.fill = image;
-      art.stroke = 'red';
-      art.center();
-      this.art_global.add(art);
-      two.update();
-      this.addInteractivity(art);
+      const image = two.makeTexture(this._vrem_service.urlForContent(e.path), function () {
+        const art = two.makeSprite(image, e.position.x * that.pix_per_m, that.two_height - e.position.y * that.pix_per_m);
+        art.scale = (e.size.x * that.pix_per_m) / art.width;
+        that.art_global.add(art);
+        two.update();
+        that.addInteractivity(art);
+      });
+
     }
 
   }

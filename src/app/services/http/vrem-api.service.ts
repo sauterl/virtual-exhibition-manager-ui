@@ -67,7 +67,8 @@ export class VremApiService extends RestfulService {
         }), null);
     }
 
-    public uploadExhibit(exhibitUpload: IExhibitUpload) {
-        this.post<IExhibitUpload>('exhibit/upload', JSON.stringify(exhibitUpload), null);
+    public uploadExhibit(exhibitUpload: IExhibitUpload): Observable<IExhibitUpload> {
+        console.log(JSON.stringify(exhibitUpload));
+        return this.post<IExhibitUpload>('exhibits/upload', JSON.stringify(exhibitUpload), null);
     }
 }
