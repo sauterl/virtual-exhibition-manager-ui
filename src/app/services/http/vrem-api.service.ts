@@ -8,6 +8,7 @@ import {ListExhibitionResponse} from '../../model/responses/list-exhibition-resp
 import {IExhibition} from '../../model/interfaces/exhibition/exhibition.interface';
 import {ListExhibitsResponse} from '../../model/responses/list-exhibits-response.interface';
 import {Exhibit} from '../../model/implementations/exhibit.model';
+import {IExhibitUpload} from '../../model/interfaces/collection/exhibit-upload.interface';
 
 @Injectable()
 export class VremApiService extends RestfulService {
@@ -64,5 +65,9 @@ export class VremApiService extends RestfulService {
             if (key === '_belongsTo') return undefined;
             else return value;
         }), null);
+    }
+
+    public uploadExhibit(exhibitUpload: IExhibitUpload) {
+        this.post<IExhibitUpload>('exhibit/upload', JSON.stringify(exhibitUpload), null);
     }
 }

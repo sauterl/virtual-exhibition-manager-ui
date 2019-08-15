@@ -1,0 +1,41 @@
+<form class="form" [formGroup]="exhibitForm" (ngSubmit)="onSubmit()">
+  <mat-form-field>
+    <mat-select placeholder="Art Collection">
+      <mat-option value="classics">Classics</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br>
+  <mat-form-field>
+    <input matInput formControlName="name" placeholder="Name">
+  </mat-form-field>
+  <br>
+  <mat-form-field>
+    <textarea matInput formControlName="description" placeholder="Description"></textarea>
+  </mat-form-field>
+  <br>
+  <mat-form-field>
+    <mat-select placeholder="Type">
+      <mat-option value="IMAGE">Image</mat-option>
+      <mat-option value="MODEL">Model</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br>
+    <button type="button" mat-raised-button (click)="fileInput.click()">Choose File</button>
+    <input hidden (change)="onFileChange($event)" #fileInput type="file" id="file">
+  <br>
+  <mat-form-field>
+    <input class="size" matInput formControlName="size_width" placeholder="Width">
+  </mat-form-field>
+  <mat-form-field>
+    <input class="size" matInput formControlName="size_height" placeholder="Height">
+  </mat-form-field>
+  <br>
+  <mat-form-field>
+    <mat-select placeholder="Light">
+      <mat-option value="true">On</mat-option>
+      <mat-option value="false">Off</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br>
+  <button mat-raised-button type="submit">Submit</button>
+</form>

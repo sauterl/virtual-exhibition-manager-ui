@@ -5,6 +5,7 @@ import {EditExhibitionVisualComponent} from './components/exhibitions/edit-exhib
 import {ChooseEditorComponent} from './components/exhibitions/choose-editor/choose-editor.component';
 import {ListExhibitionComponent} from './components/exhibitions/list-exhibition.component';
 import {ExhibitionExistsGuard} from './exhibition-exists.guard';
+import {ExhibitFormComponent} from './components/collections/exhibit-form/exhibit-form.component';
 
 
 const routes: Routes = [
@@ -15,6 +16,7 @@ const routes: Routes = [
     component: ChooseEditorComponent,
     children: [
       {path: '', redirectTo: 'visual', pathMatch: 'full'},
+      {path: 'add_exhibit', component : ExhibitFormComponent},
       {path: 'legacy', component: EditExhibitionComponent},
       {path: 'visual', component: EditExhibitionVisualComponent}
     ],

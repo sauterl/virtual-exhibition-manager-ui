@@ -11,5 +11,11 @@
      [active]="rlb.isActive">
     Legacy Editor
   </a>
+  <a mat-tab-link
+     [routerLink]="['add_exhibit']"
+     routerLinkActive #rlc="routerLinkActive"
+     [active]="rlc.isActive">
+    Add Exhibit
+  </a>
 </nav>
 <router-outlet></router-outlet>
