@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {EditorService} from '../../../services/editor/editor.service';
 import {Exhibition} from '../../../model/implementations/exhibition.model';
 import {Room} from '../../../model/implementations/room.model';
@@ -20,7 +20,7 @@ declare var $: any;
   templateUrl: './edit-exhibition-visual.component.html',
   styleUrls: ['./edit-exhibition-visual.component.scss']
 })
-export class EditExhibitionVisualComponent implements AfterViewInit{
+export class EditExhibitionVisualComponent implements AfterViewInit, OnDestroy{
 
   @ViewChild('vis', {read: ElementRef}) vis_elem: ElementRef;
   private two_global: any;
@@ -28,6 +28,9 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
   private two_width: number;
   private two_height: number;
   private pix_per_m: number;
+
+  private lookup_table: any;
+  private texture_map: any;
 
   ngAfterViewInit(): void {
     // Get room size and calculate width to height ratio.
@@ -78,6 +81,11 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
     // moveItemInArray(this._exhibits, event.previousIndex, event.currentIndex);
   }
 
+  ngOnDestroy(): void {
+    this.two_global.clear();
+    delete this.two_global;
+  }
+
 
   /** The {NestedTreeControl} for the per-room tree list. */
   private _treeControl = new NestedTreeControl<any>(node => {
@@ -111,6 +119,7 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
   constructor(private _editor: EditorService, private _vrem_service: VremApiService) {
     this._roomDataSources = this._editor.currentObservable.pipe(map( e => e.rooms));
     this._exhibits = this._vrem_service.listExhibits();
+    this.texture_map = {};
   }
 
   /**
@@ -255,31 +264,46 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
   }
 
   drawWall(wall: Wall): void {
-    const two = this.two_global;
 
-    two.remove(this.art_global);
-    this.art_global = two.makeGroup();
+    this.two_global.remove(this.art_global);
+    this.art_global = this.two_global.makeGroup();
+    this.lookup_table = {};
     const that = this;
 
+    console.log(this.two_global.scene.children);
     let exhibit: any;
     for (exhibit in wall.exhibits) {
 
       const e = wall.exhibits[exhibit];
 
-      const image = two.makeTexture(this._vrem_service.urlForContent(e.path), function () {
-        const art = two.makeSprite(image, e.position.x * that.pix_per_m, that.two_height - e.position.y * that.pix_per_m);
+
+      const path = this._vrem_service.urlForContent(e.path);
+      console.log('path: ' + path);
+      const image = this.two_global.makeTexture(path, function () {
+        console.log(image);
+        let art: any;
+        if (image === undefined) {
+          console.log('undefined');
+          art = that.two_global.makeSprite(that._vrem_service.urlForContent(e.path), e.position.x * that.pix_per_m, that.two_height - e.position.y * that.pix_per_m);
+        } else {
+          art = that.two_global.makeSprite(image, e.position.x * that.pix_per_m, that.two_height - e.position.y * that.pix_per_m);
+        }
         art.scale = (e.size.x * that.pix_per_m) / art.width;
+        that.art_global.add(image);
         that.art_global.add(art);
-        two.update();
+        that.two_global.update();
         that.addInteractivity(art);
+        that.lookup_table[art.id] = e;
       });
 
     }
+    console.log(this.two_global.scene.children);
+    console.log(this.lookup_table);
 
   }
 
   addInteractivity(shape): void {
-    const two = this.two_global;
+    const that = this;
     let offset_x: number;
     let offset_y: number;
 
@@ -288,13 +312,17 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
       let x = e.clientX - offset_x;
       let y = e.clientY + pageYOffset - offset_y;
       shape.translation.set(x, y);
-      two.update();
+      that.two_global.update();
     };
     const dragEnd = function (e) {
       e.preventDefault();
       $(window)
         .unbind('mousemove', drag)
         .unbind('mouseup', dragEnd);
+      that.lookup_table[shape.id].position.x = shape.translation.x / that.pix_per_m;
+      that.lookup_table[shape.id].position.y = (that.two_height - shape.translation.y) / that.pix_per_m;
+      console.log('position: ' + shape.translation.x + ', ' + shape.translation.y);
+      console.log(shape.id);
     };
 
     $(shape._renderer.elem)
