@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {EditorService} from '../../../services/editor/editor.service';
 import {Exhibition} from '../../../model/implementations/exhibition.model';
 import {Room} from '../../../model/implementations/room.model';
@@ -20,7 +20,7 @@ declare var $: any;
   templateUrl: './edit-exhibition-visual.component.html',
   styleUrls: ['./edit-exhibition-visual.component.scss']
 })
-export class EditExhibitionVisualComponent implements AfterViewInit, OnDestroy{
+export class EditExhibitionVisualComponent implements AfterViewInit{
 
   @ViewChild('vis', {read: ElementRef}) vis_elem: ElementRef;
   private two_global: any;
@@ -53,9 +53,6 @@ export class EditExhibitionVisualComponent implements AfterViewInit, OnDestroy{
       elem.style.width = this.two_width;
     }
 
-    console.log(this.two_width);
-    console.log(this.two_height);
-
     let params = {width: this.two_width, height: this.two_height};
     this.two_global = new Two(params).appendTo(elem);
 
@@ -74,18 +71,9 @@ export class EditExhibitionVisualComponent implements AfterViewInit, OnDestroy{
   }
 
   drop(event: CdkDragDrop<string[]>) {
-    const addedExhibit = this.two_global.makeRectangle(this.two_global.width / 2, this.two_global.height / 2, 100, 100);
-    addedExhibit.fill = 'beige';
-    this.two_global.update();
-    this.addInteractivity(addedExhibit);
-    // moveItemInArray(this._exhibits, event.previousIndex, event.currentIndex);
+    this.drawExhibit(event.item.data, this);
+    // TODO: add exhibit to exhibition object
   }
-
-  ngOnDestroy(): void {
-    this.two_global.clear();
-    delete this.two_global;
-  }
-
 
   /** The {NestedTreeControl} for the per-room tree list. */
   private _treeControl = new NestedTreeControl<any>(node => {
@@ -268,38 +256,30 @@ export class EditExhibitionVisualComponent implements AfterViewInit, OnDestroy{
     this.two_global.remove(this.art_global);
     this.art_global = this.two_global.makeGroup();
     this.lookup_table = {};
-    const that = this;
 
-    console.log(this.two_global.scene.children);
     let exhibit: any;
     for (exhibit in wall.exhibits) {
-
       const e = wall.exhibits[exhibit];
-
-
-      const path = this._vrem_service.urlForContent(e.path);
-      console.log('path: ' + path);
-      const image = this.two_global.makeTexture(path, function () {
-        console.log(image);
-        let art: any;
-        if (image === undefined) {
-          console.log('undefined');
-          art = that.two_global.makeSprite(that._vrem_service.urlForContent(e.path), e.position.x * that.pix_per_m, that.two_height - e.position.y * that.pix_per_m);
-        } else {
-          art = that.two_global.makeSprite(image, e.position.x * that.pix_per_m, that.two_height - e.position.y * that.pix_per_m);
-        }
-        art.scale = (e.size.x * that.pix_per_m) / art.width;
-        that.art_global.add(image);
-        that.art_global.add(art);
-        that.two_global.update();
-        that.addInteractivity(art);
-        that.lookup_table[art.id] = e;
-      });
-
+      this.drawExhibit(e, this);
     }
-    console.log(this.two_global.scene.children);
-    console.log(this.lookup_table);
+  }
 
+  drawExhibit(e, that): void {
+    const path = this._vrem_service.urlForContent(e.path);
+    const image = this.two_global.makeTexture(path, function () {
+      let art: any;
+      if (image === undefined) {
+        art = that.two_global.makeSprite(path, e.position.x * that.pix_per_m, that.two_height - e.position.y * that.pix_per_m);
+      } else {
+        art = that.two_global.makeSprite(image, e.position.x * that.pix_per_m, that.two_height - e.position.y * that.pix_per_m);
+      }
+      art.scale = (e.size.x * that.pix_per_m) / art.width;
+      that.art_global.add(image);
+      that.art_global.add(art);
+      that.two_global.update();
+      that.addInteractivity(art);
+      that.lookup_table[art.id] = e;
+    });
   }
 
   addInteractivity(shape): void {
@@ -321,8 +301,6 @@ export class EditExhibitionVisualComponent implements AfterViewInit, OnDestroy{
         .unbind('mouseup', dragEnd);
       that.lookup_table[shape.id].position.x = shape.translation.x / that.pix_per_m;
       that.lookup_table[shape.id].position.y = (that.two_height - shape.translation.y) / that.pix_per_m;
-      console.log('position: ' + shape.translation.x + ', ' + shape.translation.y);
-      console.log(shape.id);
     };
 
     $(shape._renderer.elem)
