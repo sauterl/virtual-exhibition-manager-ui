@@ -1,11 +1,13 @@
 <mat-drawer-container class="container" autosize>
   <mat-drawer class="inspector" position="end" mode="side" opened>
-    <h1 class="mat-h1">Inspector: {{(selectedType|async)}}</h1>
-    <div cdkDropList [cdkDropListConnectedTo]="vis" cdkDropListSortingDisabled>
-      <div *ngFor="let exhibit of (_exhibits|async)" cdkDrag [cdkDragData]="exhibit">
-        {{exhibit.name}}
-      </div>
-    </div>
+    <h2 class="mat-h2">Available Exhibits</h2>
+    <mat-list cdkDropList [cdkDropListConnectedTo]="vis" class="exhibit-list">
+      <mat-list-item *ngFor="let exhibit of (_exhibits|async)" class="exhibit-draggable" cdkDrag [cdkDragData]="exhibit" [cdkDragDisabled]="!(isSelectedWall|async)">
+        <img matListAvatar [src]="getPreview(exhibit)" alt="Art" style="border-radius: 0">
+        <h4 mat-line>{{exhibit.name}}</h4>
+        <img *cdkDragPreview [src]="getPreview(exhibit)" width="100px">
+      </mat-list-item>
+    </mat-list>
   </mat-drawer>
 
   <div cdkDropList #vis="cdkDropList" class="visualizer" (cdkDropListDropped)="drop($event)"></div>

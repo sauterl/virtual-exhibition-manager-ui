@@ -10,6 +10,7 @@ import {map, share} from 'rxjs/operators';
 import {Vector3f} from '../../../model/interfaces/general/vector-3f.model';
 import {VremApiService} from '../../../services/http/vrem-api.service';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {forEach} from '@angular/router/src/utils/collection';
 // import * as Two from 'two.js';
 
 declare var Two: any;
@@ -30,12 +31,19 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
   private pix_per_m: number;
 
   private lookup_table: any;
-  private texture_map: any;
+  private current_wall: Wall;
 
   ngAfterViewInit(): void {
-    // Get room size and calculate width to height ratio.
     let size_room: Vector3f;
     this._roomDataSources.subscribe(x => size_room = x[0].size);
+    this.drawWall(size_room);
+  }
+
+  drawWall(size_room: Vector3f): void {
+    while (this.vis_elem.nativeElement.firstChild) {
+      this.vis_elem.nativeElement.removeChild(this.vis_elem.nativeElement.firstChild);
+    }
+    // Get room size and calculate width to height ratio.
     const ratio_wall = size_room.x / size_room.y;
 
     const elem = this.vis_elem.nativeElement;
@@ -45,7 +53,6 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
       this.two_width = elem.clientWidth;
       this.two_height = this.two_width / ratio_wall;
       this.pix_per_m = this.two_width / size_room.x;
-      //elem.style.height = this.two_height;
     } else {
       this.two_height = elem.clientHeight;
       this.two_width = this.two_height * ratio_wall;
@@ -71,8 +78,14 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
   }
 
   drop(event: CdkDragDrop<string[]>) {
+    event.item.data.position.x = (this.two_width / 2) / this.pix_per_m;
+    event.item.data.position.y = (this.two_height / 2) / this.pix_per_m;
     this.drawExhibit(event.item.data, this);
+    this.current_wall.exhibits.push(event.item.data);
     // TODO: add exhibit to exhibition object
+  }
+  getPreview(exhibit: Exhibit) {
+    return this._vrem_service.urlForContent(exhibit.path);
   }
 
   /** The {NestedTreeControl} for the per-room tree list. */
@@ -107,7 +120,6 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
   constructor(private _editor: EditorService, private _vrem_service: VremApiService) {
     this._roomDataSources = this._editor.currentObservable.pipe(map( e => e.rooms));
     this._exhibits = this._vrem_service.listExhibits();
-    this.texture_map = {};
   }
 
   /**
@@ -237,6 +249,7 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
    */
   public roomClicked(event: MouseEvent, room: Room) {
     this._editor.inspected = room;
+    this.drawWall(room.size);
     event.stopPropagation();
   }
 
@@ -247,11 +260,12 @@ export class EditExhibitionVisualComponent implements AfterViewInit{
    */
   public wallClicked(event: MouseEvent, wall: Wall) {
     this._editor.inspected = wall;
+    this.current_wall = wall;
     event.stopPropagation();
-    this.drawWall(wall);
+    this.drawArt(wall);
   }
 
-  drawWall(wall: Wall): void {
+  drawArt(wall: Wall): void {
 
     this.two_global.remove(this.art_global);
     this.art_global = this.two_global.makeGroup();
