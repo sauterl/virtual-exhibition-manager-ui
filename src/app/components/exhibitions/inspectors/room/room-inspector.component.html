@@ -1,0 +1,42 @@
+
+<div class="full-width" [style.display]="'flex'" [style.justify-content]="'space-around'">
+    <app-room-canvas [room]="room" ></app-room-canvas>
+</div>
+
+<hr/>
+
+<h4 class="mat-h4">General properties</h4>
+
+
+<mat-form-field class="full-width">
+    <input matInput placeholder="Exhibition" [value]="room._belongsTo.name" disabled>
+</mat-form-field>
+
+<mat-form-field class="full-width">
+    <input matInput placeholder="Room name" [(ngModel)]="room.text">
+</mat-form-field>
+
+<mat-form-field class="full-width">
+    <mat-select placeholder="Floor (Texture)" [(ngModel)]="room.floor">
+        <mat-option *ngFor="let texture of textures" [value]="texture">
+            {{texture}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+<mat-form-field class="full-width">
+    <mat-select placeholder="Ceiling (Texture)" [(ngModel)]="room.ceiling">
+        <mat-option *ngFor="let texture of textures" [value]="texture">
+            {{texture}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+<h4 class="mat-h4">Room geometry</h4>
+
+<app-vector3f-input [vector]="room.position" [name]="'Position'"></app-vector3f-input>
+
+<app-vector3f-input [vector]="room.size" [name]="'Size'" [labels]="['Width', 'Height', 'Depth']"></app-vector3f-input>
+
+<h4 class="mat-h4">Entrypoint</h4>
+<app-vector3f-input [vector]="room.entrypoint" [name]="'Entrypoint'" [show]="[true, false, true]" [labels]="['Entrypoint (x)', null, 'Entrypoint (y)']"></app-vector3f-input>

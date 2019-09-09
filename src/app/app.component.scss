@@ -1,0 +1,24 @@
+#navbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+#content {
+  padding-top: 10px;
+  height: 100%;
+}
+
+.status {
+  border: black 1px solid;
+  font-size: 13px;
+  text-align: center;
+  padding: 5px;
+}
+
+.saved {
+  background-color: green;
+}
+
+.unsaved {
+  background-color: gold;
+}
