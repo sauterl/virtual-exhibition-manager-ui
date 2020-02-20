@@ -1,6 +1,5 @@
 import {IExhibition} from '../interfaces/exhibition/exhibition.interface';
 import {Room} from './room.model';
-import {ObjectId} from '../interfaces/exhibition/objectid.interface';
 
 /**
  *
@@ -9,6 +8,27 @@ export class Exhibition implements IExhibition {
 
   /** List of @type {Rooms} for this @type {Exhibition}. */
   public rooms: Room[] = [];
+
+  /**
+   *
+   * @param id
+   * @param key
+   * @param name
+   * @param description
+   */
+  constructor(public id: string, public key: string, public name: string, public description: string) {
+  }
+
+  /**
+   * Returns a short ID for this @type {Exhibition}
+   */
+  get shortId(): string {
+    if (this.id != null) {
+      return this.id.substr(0, 5);
+    } else {
+      return 'n/a';
+    }
+  }
 
   /**
    * Copies a @type {IExhibition} to a new @type {Exhibition} object.
@@ -25,27 +45,6 @@ export class Exhibition implements IExhibition {
       n.rooms.push(rc);
     }
     return n;
-  }
-
-  /**
-   *
-   * @param id
-   * @param key
-   * @param name
-   * @param description
-   */
-  constructor(public id: ObjectId, public key: string, public name: string, public description: string) {
-  }
-
-  /**
-   * Returns a short ID for this @type {Exhibition}
-   */
-  get shortId(): string {
-    if (this.id != null) {
-      return this.id.id.substr(0, 5);
-    } else {
-      return 'n/a';
-    }
   }
 
   /**
