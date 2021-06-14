@@ -78,11 +78,16 @@ export class ExhibitFormComponent implements OnInit {
     let position: Vector3f;
     position = {x: 0, y: 0, z: 0};
     let size: Vector3f;
-    size = {x: this.exhibitForm.get('size_width').value, y: this.exhibitForm.get('size_height').value, z: 0};
-
+    size = {x: 0, y: 0, z: 0};
+    if (this.exhibitForm.get('size_width').value > 0) {
+      size.x = this.exhibitForm.get('size_width').value;
+    }
+    if (this.exhibitForm.get('size_height').value > 0) {
+      size.y = this.exhibitForm.get('size_height').value;
+    }
 
     const exhibit = new Exhibit(
-      '',
+      null,
       this.exhibitForm.get('name').value,
       <CHOType>this.exhibitForm.get('type').value,
       this.exhibitForm.get('description').value,

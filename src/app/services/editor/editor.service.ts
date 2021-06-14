@@ -86,7 +86,7 @@ export class EditorService {
      */
     get currentId(): (string | null) {
         if (this._activeExhibition.value) {
-            return this._activeExhibition.value.id.id;
+            return this._activeExhibition.value.id;
         } else {
             return null;
         }
@@ -138,7 +138,7 @@ export class EditorService {
      */
     public reload(): Observable<boolean> {
         if (this._activeExhibition) {
-            return this.load(this._activeExhibition.value.id.id);
+            return this.load(this._activeExhibition.value.id);
         } else {
             return of(false);
         }
