@@ -1,4 +1,4 @@
 export interface ExhibitionSummary {
-    objectId: string;
+    id: string;
     name: string;
 }
