@@ -43,7 +43,7 @@ export class VremApiService extends RestfulService {
      * @return Observable<IExhibition>
      * */
     public load(id: string): Observable<IExhibition> {
-        return this.get<IExhibition>('exhibitions/load/' + id).pipe(first());
+        return this.get<IExhibition>('exhibitions/load/id/' + id).pipe(first());
     }
 
     /**
@@ -51,7 +51,7 @@ export class VremApiService extends RestfulService {
      * @param content
      */
     public urlForContent(content: string) {
-        return this.resolve('content/get/' + encodeURIComponent(content));
+        return this.resolve('content/' + encodeURIComponent(content));
     }
 
     /**
@@ -69,6 +69,6 @@ export class VremApiService extends RestfulService {
 
     public uploadExhibit(exhibitUpload: IExhibitUpload): Observable<IExhibitUpload> {
         console.log(JSON.stringify(exhibitUpload));
-        return this.post<IExhibitUpload>('exhibits/upload', JSON.stringify(exhibitUpload), null);
+        return this.post<IExhibitUpload>('exhibits/save', JSON.stringify(exhibitUpload), null);
     }
 }

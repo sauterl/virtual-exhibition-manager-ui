@@ -9,7 +9,7 @@ import {first} from 'rxjs/operators';
  */
 export class RestfulService {
     /** URL to the RESTful endpoint. */
-    private _endpoint: string = 'http://localhost:4567/';
+    private _endpoint: string = 'http://localhost:4545/api/';
 
     /**
      *
